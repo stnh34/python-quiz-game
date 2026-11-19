@@ -1,8 +1,12 @@
 """퀴즈 게임 실행 파일: python main.py"""
 
 import sys
+from pathlib import Path
 
 from game import QuizGame
+
+# 실행 위치와 상관없이 항상 프로젝트 루트의 state.json 을 사용한다.
+STATE_PATH = Path(__file__).resolve().parent / "state.json"
 
 
 def main() -> None:
@@ -11,7 +15,7 @@ def main() -> None:
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
 
-    game = QuizGame()
+    game = QuizGame(STATE_PATH)
     game.run()
 
 
