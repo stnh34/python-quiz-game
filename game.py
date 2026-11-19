@@ -95,10 +95,23 @@ class QuizGame:
                 print(f"❌ 오답입니다. 정답은 {quiz.correct_choice_text()} 입니다.")
 
         score = self.calculate_score(correct_count, total)
+        is_new_best = self.update_best_score(score, correct_count, total)
+        self.save_state()
+
         print()
         print(LINE)
         print(f"🏆 결과: {total}문제 중 {correct_count}문제 정답! ({score}점)")
+        if is_new_best:
+            print("🎉 새로운 최고 점수입니다!")
         print(LINE)
+
+    def update_best_score(self, score: int, correct_count: int, total: int) -> bool:
+        """최고 점수와 비교해 갱신한다. 갱신되면 True."""
+        if self.best_score is not None and score <= self.best_score:
+            return False
+        self.best_score = score
+        self.best_detail = {"correct": correct_count, "total": total}
+        return True
 
     @staticmethod
     def calculate_score(correct_count: int, total: int) -> int:
@@ -142,7 +155,16 @@ class QuizGame:
         return True
 
     def show_score(self) -> None:
-        print("\n🚧 준비 중인 기능입니다.")
+        """최고 점수를 보여준다."""
+        if self.best_score is None:
+            print("\n📭 아직 퀴즈를 풀지 않았습니다. 먼저 퀴즈를 풀어 보세요!")
+            return
+
+        detail = ""
+        if self.best_detail:
+            detail = (f" ({self.best_detail.get('total')}문제 중 "
+                      f"{self.best_detail.get('correct')}문제 정답)")
+        print(f"\n🏆 최고 점수: {self.best_score}점{detail}")
 
     def delete_quiz(self) -> None:
         print("\n🚧 준비 중인 기능입니다.")
