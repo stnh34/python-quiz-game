@@ -4,12 +4,13 @@ import random
 from pathlib import Path
 
 from default_quizzes import create_default_quizzes
-from input_handler import InputHandler
+from input_handler import HINT_COMMAND, InputHandler
 from quiz import Quiz
 from storage import StateCorruptedError, StateStorage
 
 LINE = "=" * 40
 SUB_LINE = "-" * 40
+HINT_PENALTY = 5  # 힌트 1회 사용 시 차감 점수
 
 
 class QuizGame:
@@ -82,25 +83,32 @@ class QuizGame:
         selected = random.sample(self.quizzes, total)
         print(f"\n📝 퀴즈를 시작합니다! (총 {total}문제)")
 
+        print(f"💡 힌트가 있는 문제는 'h' 를 입력하면 힌트를 볼 수 있습니다. (사용 시 -{HINT_PENALTY}점)")
+
         correct_count = 0
+        hints_used = 0
         for number, quiz in enumerate(selected, start=1):
             print()
             print(SUB_LINE)
             quiz.display(number)
-            user_answer = self.inputs.read_int("정답 입력: ", 1, Quiz.CHOICE_COUNT)
-            if quiz.is_correct(user_answer):
+            is_correct, used_hint = self.ask_answer(quiz)
+            if used_hint:
+                hints_used += 1
+            if is_correct:
                 correct_count += 1
                 print("✅ 정답입니다!")
             else:
                 print(f"❌ 오답입니다. 정답은 {quiz.correct_choice_text()} 입니다.")
 
-        score = self.calculate_score(correct_count, total)
+        score = self.calculate_score(correct_count, total, hints_used)
         is_new_best = self.update_best_score(score, correct_count, total)
         self.save_state()
 
         print()
         print(LINE)
         print(f"🏆 결과: {total}문제 중 {correct_count}문제 정답! ({score}점)")
+        if hints_used:
+            print(f"💡 힌트 {hints_used}회 사용 (-{hints_used * HINT_PENALTY}점 반영)")
         if is_new_best:
             print("🎉 새로운 최고 점수입니다!")
         print(LINE)
@@ -113,12 +121,28 @@ class QuizGame:
         self.best_detail = {"correct": correct_count, "total": total}
         return True
 
+    def ask_answer(self, quiz: Quiz) -> tuple[bool, bool]:
+        """정답을 입력받는다. (정답 여부, 힌트 사용 여부)를 반환한다."""
+        used_hint = False
+        while True:
+            hint_available = quiz.has_hint() and not used_hint
+            prompt = "정답 입력 (힌트: h): " if hint_available else "정답 입력: "
+            user_answer = self.inputs.read_int(
+                prompt, 1, Quiz.CHOICE_COUNT, allow_hint=hint_available
+            )
+            if user_answer == HINT_COMMAND:
+                used_hint = True
+                print(f"💡 힌트: {quiz.hint}")
+                continue
+            return quiz.is_correct(user_answer), used_hint
+
     @staticmethod
-    def calculate_score(correct_count: int, total: int) -> int:
-        """100점 만점 기준 점수를 계산한다."""
+    def calculate_score(correct_count: int, total: int, hints_used: int = 0) -> int:
+        """100점 만점 기준 점수를 계산한다. 힌트 1회당 HINT_PENALTY 점 차감(최소 0점)."""
         if total == 0:
             return 0
-        return round(correct_count / total * 100)
+        score = round(correct_count / total * 100) - hints_used * HINT_PENALTY
+        return max(0, score)
 
     def add_quiz(self) -> None:
         """문제, 선택지 4개, 정답 번호, 힌트(선택)를 입력받아 등록하고 저장한다."""
