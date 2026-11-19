@@ -1,6 +1,7 @@
 """게임 전체 흐름을 관리하는 QuizGame 클래스."""
 
 import random
+from datetime import datetime
 from pathlib import Path
 
 from default_quizzes import create_default_quizzes
@@ -11,6 +12,7 @@ from storage import StateCorruptedError, StateStorage
 LINE = "=" * 40
 SUB_LINE = "-" * 40
 HINT_PENALTY = 5  # 힌트 1회 사용 시 차감 점수
+HISTORY_DISPLAY_COUNT = 5  # 점수 확인 화면에 보여줄 최근 기록 수
 
 
 class QuizGame:
@@ -102,6 +104,7 @@ class QuizGame:
 
         score = self.calculate_score(correct_count, total, hints_used)
         is_new_best = self.update_best_score(score, correct_count, total)
+        self.record_history(total, correct_count, hints_used, score)
         self.save_state()
 
         print()
@@ -120,6 +123,16 @@ class QuizGame:
         self.best_score = score
         self.best_detail = {"correct": correct_count, "total": total}
         return True
+
+    def record_history(self, total: int, correct_count: int, hints_used: int, score: int) -> None:
+        """게임 한 판의 결과를 기록에 추가한다."""
+        self.history.append({
+            "played_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "total": total,
+            "correct": correct_count,
+            "hints_used": hints_used,
+            "score": score,
+        })
 
     def ask_answer(self, quiz: Quiz) -> tuple[bool, bool]:
         """정답을 입력받는다. (정답 여부, 힌트 사용 여부)를 반환한다."""
@@ -189,6 +202,20 @@ class QuizGame:
             detail = (f" ({self.best_detail.get('total')}문제 중 "
                       f"{self.best_detail.get('correct')}문제 정답)")
         print(f"\n🏆 최고 점수: {self.best_score}점{detail}")
+        self.show_history()
+
+    def show_history(self) -> None:
+        """최근 게임 기록을 최신순으로 보여준다."""
+        if not self.history:
+            return
+        recent = self.history[-HISTORY_DISPLAY_COUNT:][::-1]
+        print(f"\n📜 최근 기록 (최근 {len(recent)}회 / 전체 {len(self.history)}회)")
+        print(SUB_LINE)
+        for record in recent:
+            print(f"{record.get('played_at', '-')} | "
+                  f"{record.get('total', '?')}문제 중 {record.get('correct', '?')}문제 정답 | "
+                  f"힌트 {record.get('hints_used', 0)}회 | {record.get('score', '?')}점")
+        print(SUB_LINE)
 
     def delete_quiz(self) -> None:
         """번호를 골라 퀴즈를 삭제하고 파일에 반영한다. 0 입력 시 취소."""
