@@ -140,6 +140,7 @@ python-quiz-game/
 - 기능 단위 커밋: `Feat:` / `Refactor:` / `Docs:` / `Chore:` 접두어로 변경 요약
 - `feature/play-quiz` 브랜치에서 퀴즈 풀기 기능 개발 후 `main` 으로 `--no-ff` 병합
 - 별도 디렉터리에 `clone` → 수정/커밋/푸시 → 원래 작업 디렉터리에서 `pull` 로 반영 확인
+- (이 줄은 clone 한 저장소 `quiz-game-clone` 에서 추가한 뒤 push 했습니다.)
 
 ```bash
 git log --oneline --graph
