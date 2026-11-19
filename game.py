@@ -108,7 +108,24 @@ class QuizGame:
         return round(correct_count / total * 100)
 
     def add_quiz(self) -> None:
-        print("\n🚧 준비 중인 기능입니다.")
+        """문제, 선택지 4개, 정답 번호, 힌트(선택)를 입력받아 등록하고 저장한다."""
+        print("\n📌 새로운 퀴즈를 추가합니다.")
+        print()
+        question = self.inputs.read_text("문제를 입력하세요: ")
+        choices = [
+            self.inputs.read_text(f"선택지 {number}: ")
+            for number in range(1, Quiz.CHOICE_COUNT + 1)
+        ]
+        answer = self.inputs.read_int(
+            f"정답 번호 (1-{Quiz.CHOICE_COUNT}): ", 1, Quiz.CHOICE_COUNT
+        )
+        hint = input("힌트 (없으면 Enter): ").strip()
+
+        self.quizzes.append(Quiz(question, choices, answer, hint))
+        if self.save_state():
+            print("\n✅ 퀴즈가 추가되었습니다!")
+        else:
+            print("\n⚠️ 퀴즈는 추가되었지만 파일 저장에 실패했습니다.")
 
     def list_quizzes(self) -> bool:
         """등록된 퀴즈 목록을 출력한다. 퀴즈가 없으면 False 를 반환한다."""
