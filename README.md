@@ -155,3 +155,5 @@ python-quiz-game/
 ```bash
 git log --oneline --graph
 ```
+
+> clone 실습: 이 줄은 별도 디렉터리(quiz-game-clone2)에서 추가하고 push 했습니다. (2026-11-20)
