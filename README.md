@@ -133,7 +133,17 @@ python-quiz-game/
 ⚠️ 잘못된 입력입니다. 1-6 사이의 숫자를 입력하세요.
 ```
 
-스크린샷: `docs/screenshots/` (menu.png, play.png, add_quiz.png, score.png)
+### 스크린샷
+
+| 화면 | 이미지 |
+|---|---|
+| 메뉴 + 잘못된 입력 처리 | ![menu](docs/screenshots/menu.png) |
+| 퀴즈 추가 | ![add_quiz](docs/screenshots/add_quiz.png) |
+| 퀴즈 목록 | ![list](docs/screenshots/list.png) |
+| 퀴즈 풀기 (힌트 사용) | ![play](docs/screenshots/play.png) |
+| 점수 확인 + 기록 | ![score](docs/screenshots/score.png) |
+| 개발 환경 (Python / Git / VSCode 버전, Git 설정) | ![env](docs/screenshots/env.png) |
+| `git log --oneline --graph` | ![git_log](docs/screenshots/git_log.png) |
 
 ## 8. Git 작업 흐름
 
