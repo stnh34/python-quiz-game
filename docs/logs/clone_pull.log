@@ -1,0 +1,36 @@
+# clone / pull 실습 로그 (2026-11-20 00:49:49)
+
+## 1) 별도 디렉터리에 clone
+$ git clone https://github.com/stnh34/python-quiz-game.git quiz-game-clone2
+Cloning into 'quiz-game-clone2'...
+
+## 2) clone 한 저장소에서 README 수정 → commit → push
+$ git add README.md
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+
+$ git commit -m Docs: clone 저장소에서 README 에 clone 실습 문구 추가
+[main 5f146f6] Docs: clone 저장소에서 README 에 clone 실습 문구 추가
+ 1 file changed, 2 insertions(+)
+
+$ git push origin main
+To https://github.com/stnh34/python-quiz-game.git
+   07489b4..5f146f6  main -> main
+
+## 3) 기존 작업 디렉터리(quiz-game)에서 pull
+$ git pull origin main
+From https://github.com/stnh34/python-quiz-game
+ * branch            main       -> FETCH_HEAD
+   07489b4..5f146f6  main       -> origin/main
+Updating 07489b4..5f146f6
+Fast-forward
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+## 4) 반영 확인
+$ git log --oneline -3
+5f146f6 Docs: clone 저장소에서 README 에 clone 실습 문구 추가
+07489b4 Docs: 실행 화면 및 개발 환경 스크린샷 추가
+ebeb945 Docs: clone 저장소에서 README 에 실습 기록 추가
+
+$ tail -n 1 README.md
+> clone 실습: 이 줄은 별도 디렉터리(quiz-game-clone2)에서 추가하고 push 했습니다. (2026-11-20)
