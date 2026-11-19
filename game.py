@@ -103,8 +103,19 @@ class QuizGame:
     def add_quiz(self) -> None:
         print("\n🚧 준비 중인 기능입니다.")
 
-    def list_quizzes(self) -> None:
-        print("\n🚧 준비 중인 기능입니다.")
+    def list_quizzes(self) -> bool:
+        """등록된 퀴즈 목록을 출력한다. 퀴즈가 없으면 False 를 반환한다."""
+        if not self.quizzes:
+            print("\n📭 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
+            return False
+
+        print(f"\n📋 등록된 퀴즈 목록 (총 {len(self.quizzes)}개)")
+        print()
+        print(SUB_LINE)
+        for number, quiz in enumerate(self.quizzes, start=1):
+            print(f"[{number}] {quiz.question}")
+        print(SUB_LINE)
+        return True
 
     def show_score(self) -> None:
         print("\n🚧 준비 중인 기능입니다.")
