@@ -191,7 +191,26 @@ class QuizGame:
         print(f"\n🏆 최고 점수: {self.best_score}점{detail}")
 
     def delete_quiz(self) -> None:
-        print("\n🚧 준비 중인 기능입니다.")
+        """번호를 골라 퀴즈를 삭제하고 파일에 반영한다. 0 입력 시 취소."""
+        if not self.list_quizzes():
+            return
+
+        count = len(self.quizzes)
+        number = self.inputs.read_int(f"삭제할 퀴즈 번호 (1-{count}, 취소: 0): ", 0, count)
+        if number == 0:
+            print("↩️ 삭제를 취소했습니다.")
+            return
+
+        target = self.quizzes[number - 1]
+        if not self.inputs.confirm(f"'{target.question}' 퀴즈를 삭제할까요? (y/n): "):
+            print("↩️ 삭제를 취소했습니다.")
+            return
+
+        self.quizzes.pop(number - 1)
+        if self.save_state():
+            print("🗑️ 퀴즈를 삭제했습니다.")
+        else:
+            print("⚠️ 퀴즈는 삭제되었지만 파일 저장에 실패했습니다.")
 
     def exit_game(self) -> None:
         if self.save_state():
