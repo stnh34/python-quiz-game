@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 실행 중 생성되는 데이터 파일 (프로그램이 자동 생성)
+state.json
+state.json.tmp
+state.json.bak
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
