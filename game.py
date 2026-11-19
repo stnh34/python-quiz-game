@@ -1,6 +1,8 @@
 """게임 전체 흐름을 관리하는 QuizGame 클래스."""
 
+from default_quizzes import create_default_quizzes
 from input_handler import InputHandler
+from quiz import Quiz
 
 LINE = "=" * 40
 SUB_LINE = "-" * 40
@@ -13,6 +15,7 @@ class QuizGame:
 
     def __init__(self):
         self.inputs = InputHandler()
+        self.quizzes: list[Quiz] = create_default_quizzes()
 
     # ------------------------------------------------------------------
     # 메인 루프
